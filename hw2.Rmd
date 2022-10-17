@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(tidymodels)
 library(yardstick)
@@ -37,7 +37,7 @@ abal_testing  <- testing(splitdata)  # 20%, Tibble: 837 x 10
 
 ## Q3
 ```{r}
-recipe <- recipe(age ~ ., data = abal_training) %>% 
+recipe <- recipe(age ~ ., abal_training) %>% 
   step_rm(rings) %>%  # Remove 'rings' because not a predictor of age
   step_dummy(all_nominal_predictors()) %>% # step 1
   step_interact(terms = ~ starts_with("type"):shucked_weight + longest_shell:diameter + shucked_weight:shell_weight) %>% # step 2
@@ -67,7 +67,7 @@ fitted_model
 ```{r}
 prediction <- tibble(type = 'F', longest_shell = 0.50, diameter = 0.10, height = 0.30, whole_weight = 4, shucked_weight = 1, viscera_weight = 2, shell_weight = 1, rings = 0)
 
-femaleabal <- predict(fitted_model, new_data = prediction)
+femaleabal <- predict(fitted_model, prediction)
 femaleabal
 # The predicted age of a female abalone is approximately 22.68 years.
 ```
